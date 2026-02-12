@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.5em;
+        }
+
+        .navbar-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .welcome-section h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .welcome-section p {
+            color: #666;
+        }
+
+        .attendance-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .attendance-section h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.5em;
+        }
+
+        .status-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .status-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .status-item label {
+            display: block;
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .status-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .location-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .location-info .label {
+            color: #1976D2;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .location-info .value {
+            color: #555;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-checkin {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .btn-checkin:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-checkout {
+            background: linear-gradient(135deg, #f44336 0%, #da190b 100%);
+            color: white;
+        }
+
+        .btn-checkout:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .message.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .message.error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+
+        .message.info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #2196F3;
+        }
+
+        .history-section {
+            margin-top: 30px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .history-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .history-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item-date {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .history-item-time {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .location-badge {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+
+        .permission-request {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .permission-request button {
+            background: #ffc107;
+            color: #333;
+            padding: 8px 16px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .status-card,
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .navbar-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>👨‍💼 Employee Dashboard</h1>
+        <div class="navbar-right">
+            <div class="user-info">
+                <span id="userGreeting"></span>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h2>Welcome back! 👋</h2>
+            <p id="welcomeText">Ready to mark your attendance for today?</p>
+        </div>
+
+        <div class="attendance-section">
+            <h2>📍 Attendance Check-In/Out</h2>
+
+            <div class="message" id="message"></div>
+
+            <div class="permission-request" id="permissionRequest" style="display: none;">
+                <strong>Enable Location Access</strong>
+                <p style="margin: 10px 0;">Please enable location access to mark attendance with your current location.</p>
+                <button onclick="requestLocationPermission()" style="background: #2196F3; color: white;">Enable Location</button>
+            </div>
+
+            <div class="permission-request" id="cameraRequest" style="display: none; background: #e8f5e9; border-left-color: #4CAF50;">
+                <strong>📷 Camera Access Required for Check-In</strong>
+                <p style="margin: 10px 0;">Please enable camera access to capture your photo during check-in for verification.</p>
+                <button onclick="requestCameraPermission()" style="background: #4CAF50; color: white;">Enable Camera</button>
+            </div>
+
+            <div id="cameraContainer" style="display: none; margin-bottom: 20px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <label style="display: block; margin-bottom: 10px; font-weight: 600;">📷 Camera Preview</label>
+                    <video id="cameraVideo" autoplay playsinline muted style="width: 100%; max-width: 400px; border-radius: 8px; background: #000; display: none; transform: scaleX(-1);"></video>
+                    <canvas id="photoCanvas" style="display: none;"></canvas>
+                    <img id="capturedPhoto" style="width: 100%; max-width: 400px; border-radius: 8px; display: none; border: 2px solid #4CAF50;">
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button onclick="startCamera()" style="background: #2196F3; color: white; flex: 1;">Start Camera</button>
+                        <button id="captureBtn" onclick="capturePhoto()" style="background: #4CAF50; color: white; flex: 1; display: none;">Capture Photo</button>
+                        <button id="retakeBtn" onclick="retakePhoto()" style="background: #ff9800; color: white; flex: 1; display: none;">Retake Photo</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-item">
+                    <label>Check-In Time</label>
+                    <div class="status-value" id="checkInTimeDisplay">--:--</div>
+                    <div class="location-info" style="margin-top: 10px; display: none;" id="checkInLocation">
+                        <div class="label">📍 Location (Check-In)</div>
+                        <div class="value" id="checkInCoords">Not available</div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <label>Check-Out Time</label>
+                    <div class="status-value" id="checkOutTimeDisplay">--:--</div>
+                    <div class="location-info" style="margin-top: 10px; display: none;" id="checkOutLocation">
+                        <div class="label">📍 Location (Check-Out)</div>
+                        <div class="value" id="checkOutCoords">Not available</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-checkin" id="checkInBtn" onclick="checkIn()">✓ Mark Check-In</button>
+                <button class="btn-checkout" id="checkOutBtn" onclick="checkOut()" disabled>✗ Mark Check-Out</button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Processing...</p>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <h3>📋 Today's Summary</h3>
+            <div id="historySummary">
+                <div class="history-item">
+                    <div>
+                        <div class="history-item-date">Status: Not checked in</div>
+                        <div class="history-item-time">Duration: --</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let currentLocation = { latitude: null, longitude: null };
+        let attendanceData = {};
+        let cameraStream = null;
+        let capturedPhotoData = null;
+
+        // Initialize
+        window.addEventListener('load', function() {
+            const token = localStorage.getItem('token');
+            const role = localStorage.getItem('role');
+            const userName = localStorage.getItem('userName');
+
+            if (!token || role !== 'employee') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            document.getElementById('userGreeting').textContent = `Hello, ${userName}!`;
+            loadAttendance();
+            requestLocationPermission();
+            requestCameraPermission();
+        });
+
+        function requestLocationPermission() {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        currentLocation.latitude = position.coords.latitude;
+                        currentLocation.longitude = position.coords.longitude;
+                        document.getElementById('permissionRequest').style.display = 'none';
+                        showMessage('Location access granted!', 'success');
+                    },
+                    (error) => {
+                        document.getElementById('permissionRequest').style.display = 'block';
+                        if (error.code === error.PERMISSION_DENIED) {
+                            showMessage('Location permission denied. You can still mark attendance.', 'info');
+                        }
+                    }
+                );
+            } else {
+                showMessage('Geolocation is not supported by your browser', 'error');
+            }
+        }
+
+        function requestCameraPermission() {
+            if ('mediaDevices' in navigator) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+                    .then((stream) => {
+                        cameraStream = stream;
+                        document.getElementById('cameraRequest').style.display = 'none';
+                        document.getElementById('cameraContainer').style.display = 'block';
+                        showMessage('Camera access granted!', 'success');
+                    })
+                    .catch((error) => {
+                        document.getElementById('cameraRequest').style.display = 'block';
+                        console.log('Camera permission denied:', error);
+                    });
+            } else {
+                showMessage('Camera is not supported by your browser', 'error');
+            }
+        }
+
+        function startCamera() {
+            if (!cameraStream) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+                    .then((stream) => {
+                        cameraStream = stream;
+                        const video = document.getElementById('cameraVideo');
+                        video.srcObject = stream;
+                        video.style.display = 'block';
+                        video.play().catch(err => console.error('Video play error:', err));
+                        document.getElementById('captureBtn').style.display = 'inline-block';
+                    })
+                    .catch((error) => showMessage('Error accessing camera: ' + error.message, 'error'));
+            } else {
+                const video = document.getElementById('cameraVideo');
+                video.srcObject = cameraStream;
+                video.style.display = 'block';
+                video.play().catch(err => console.error('Video play error:', err));
+                document.getElementById('captureBtn').style.display = 'inline-block';
+            }
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('photoCanvas');
+            const context = canvas.getContext('2d');
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0);
+
+            // Convert to small file (compress image)
+            capturedPhotoData = canvas.toDataURL('image/jpeg', 0.6); // 60% quality for smaller file
+            
+            const img = document.getElementById('capturedPhoto');
+            img.src = capturedPhotoData;
+            img.style.display = 'block';
+
+            video.style.display = 'none';
+            document.getElementById('captureBtn').style.display = 'none';
+            document.getElementById('retakeBtn').style.display = 'inline-block';
+            
+            showMessage('Photo captured successfully! Now you can check in.', 'success');
+        }
+
+        function retakePhoto() {
+            capturedPhotoData = null;
+            document.getElementById('cameraVideo').style.display = 'block';
+            document.getElementById('capturedPhoto').style.display = 'none';
+            document.getElementById('captureBtn').style.display = 'inline-block';
+            document.getElementById('retakeBtn').style.display = 'none';
+            startCamera();
+        }
+
+        async function checkIn() {
+            if (!capturedPhotoData) {
+                showMessage('Please capture a photo first!', 'error');
+                return;
+            }
+
+            // Request fresh location
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        currentLocation.latitude = position.coords.latitude;
+                        currentLocation.longitude = position.coords.longitude;
+                        await performCheckIn();
+                    },
+                    async (error) => {
+                        showMessage('Could not get location, proceeding with check-in', 'info');
+                        await performCheckIn();
+                    }
+                );
+            } else {
+                await performCheckIn();
+            }
+        }
+
+        async function performCheckIn() {
+            showLoading(true);
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/attendance/checkin`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        latitude: currentLocation.latitude,
+                        longitude: currentLocation.longitude,
+                        photo: capturedPhotoData
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Check-in failed');
+                }
+
+                showMessage('✓ Check-in recorded successfully!', 'success');
+                document.getElementById('checkInBtn').disabled = true;
+                document.getElementById('checkOutBtn').disabled = false;
+                capturedPhotoData = null;
+
+                loadAttendance();
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function checkOut() {
+            // Require photo for checkout first
+            const checkOutPhotoData = await captureCheckOutPhoto();
+            if (!checkOutPhotoData) {
+                return; // User cancelled or photo capture failed
+            }
+
+            // Request fresh location for checkout
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        await performCheckOut(position.coords.latitude, position.coords.longitude, checkOutPhotoData);
+                    },
+                    async (error) => {
+                        showMessage('Could not get location, proceeding with check-out', 'info');
+                        await performCheckOut(null, null, checkOutPhotoData);
+                    }
+                );
+            } else {
+                await performCheckOut(null, null, checkOutPhotoData);
+            }
+        }
+
+        async function captureCheckOutPhoto() {
+            return new Promise((resolve) => {
+                showLoading(false); // Hide loading if any
+                const modal = document.createElement('div');
+                modal.id = 'checkOutPhotoModal';
+                modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;';
+                
+                modal.innerHTML = `
+                    <div style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <h2 style="color: #333; margin-bottom: 20px;">📷 Capture Check-Out Photo</h2>
+                        <p style="color: #666; margin-bottom: 20px;">Please capture a photo for check-out verification.</p>
+                        
+                        <video id="checkOutCameraVideo" autoplay playsinline muted style="width: 100%; max-width: 300px; border-radius: 8px; background: #000; display: none; transform: scaleX(-1); margin: 15px auto;"></video>
+                        <canvas id="checkOutPhotoCanvas" style="display: none;"></canvas>
+                        <img id="checkOutCapturedPhoto" style="width: 100%; max-width: 300px; border-radius: 8px; display: none; border: 2px solid #4CAF50; margin: 15px auto;">
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 20px; flex-direction: column;">
+                            <button onclick="startCheckOutCamera()" style="background: #2196F3; color: white; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;" id="startCheckOutCameraBtn">Start Camera</button>
+                            <button onclick="captureCheckOutPhotoSnapshot()" style="background: #4CAF50; color: white; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; display: none;" id="captureCheckOutPhotoBtn">Capture Photo</button>
+                            <button onclick="retakeCheckOutPhoto()" style="background: #ff9800; color: white; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; display: none;" id="retakeCheckOutPhotoBtn">Retake Photo</button>
+                            <button onclick="confirmCheckOutPhoto()" style="background: #4CAF50; color: white; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; display: none;" id="confirmCheckOutPhotoBtn">Confirm & Check-Out</button>
+                            <button onclick="cancelCheckOutPhoto()" style="background: #757575; color: white; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Cancel</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                window.checkOutPhotoData = null;
+                window.checkOutPhotoResolve = resolve;
+            });
+        }
+
+        async function startCheckOutCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                const video = document.getElementById('checkOutCameraVideo');
+                video.srcObject = stream;
+                video.style.display = 'block';
+                document.getElementById('startCheckOutCameraBtn').style.display = 'none';
+                document.getElementById('captureCheckOutPhotoBtn').style.display = 'block';
+                document.getElementById('checkOutCapturedPhoto').style.display = 'none';
+                document.getElementById('retakeCheckOutPhotoBtn').style.display = 'none';
+                document.getElementById('confirmCheckOutPhotoBtn').style.display = 'none';
+                window.checkOutCameraStream = stream;
+            } catch (error) {
+                showMessage('Error: Could not access camera', 'error');
+            }
+        }
+
+        async function captureCheckOutPhotoSnapshot() {
+            const video = document.getElementById('checkOutCameraVideo');
+            const canvas = document.getElementById('checkOutPhotoCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, -canvas.width, 0);
+            
+            // Compress to JPEG and convert to Base64
+            canvas.toBlob(blob => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const jpegData = e.target.result;
+                    const img = document.getElementById('checkOutCapturedPhoto');
+                    img.src = jpegData;
+                    img.style.display = 'block';
+                    
+                    window.checkOutPhotoData = jpegData;
+                    
+                    document.getElementById('checkOutCameraVideo').style.display = 'none';
+                    document.getElementById('captureCheckOutPhotoBtn').style.display = 'none';
+                    document.getElementById('retakeCheckOutPhotoBtn').style.display = 'block';
+                    document.getElementById('confirmCheckOutPhotoBtn').style.display = 'block';
+                };
+                reader.readAsDataURL(blob);
+            }, 'image/jpeg', 0.6);
+        }
+
+        function retakeCheckOutPhoto() {
+            document.getElementById('checkOutCameraVideo').style.display = 'block';
+            document.getElementById('checkOutCapturedPhoto').style.display = 'none';
+            document.getElementById('captureCheckOutPhotoBtn').style.display = 'block';
+            document.getElementById('retakeCheckOutPhotoBtn').style.display = 'none';
+            document.getElementById('confirmCheckOutPhotoBtn').style.display = 'none';
+        }
+
+        function confirmCheckOutPhoto() {
+            const modal = document.getElementById('checkOutPhotoModal');
+            if (window.checkOutCameraStream) {
+                window.checkOutCameraStream.getTracks().forEach(track => track.stop());
+            }
+            modal.remove();
+            window.checkOutPhotoResolve(window.checkOutPhotoData);
+        }
+
+        function cancelCheckOutPhoto() {
+            const modal = document.getElementById('checkOutPhotoModal');
+            if (window.checkOutCameraStream) {
+                window.checkOutCameraStream.getTracks().forEach(track => track.stop());
+            }
+            modal.remove();
+            window.checkOutPhotoResolve(null);
+        }
+
+        async function performCheckOut(latitude, longitude, checkOutPhoto) {
+            showLoading(true);
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/attendance/checkout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        latitude: latitude,
+                        longitude: longitude,
+                        checkOutPhoto: checkOutPhoto
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Check-out failed');
+                }
+
+                showMessage('✓ Check-out recorded successfully!', 'success');
+                document.getElementById('checkOutBtn').disabled = true;
+                loadAttendance();
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function loadAttendance() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/attendance/today`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load attendance');
+
+                attendanceData = await response.json();
+
+                // Update display
+                if (attendanceData.checkInTime) {
+                    document.getElementById('checkInTimeDisplay').textContent = attendanceData.checkInTime;
+                    document.getElementById('checkInBtn').disabled = true;
+                    document.getElementById('checkOutBtn').disabled = false;
+
+                    if (attendanceData.checkInLatitude && attendanceData.checkInLongitude) {
+                        document.getElementById('checkInLocation').style.display = 'block';
+                        document.getElementById('checkInCoords').textContent = 
+                            `Latitude: ${attendanceData.checkInLatitude.toFixed(4)}, Longitude: ${attendanceData.checkInLongitude.toFixed(4)}`;
+                    }
+                }
+
+                if (attendanceData.checkOutTime) {
+                    document.getElementById('checkOutTimeDisplay').textContent = attendanceData.checkOutTime;
+                    document.getElementById('checkOutBtn').disabled = true;
+
+                    if (attendanceData.checkOutLatitude && attendanceData.checkOutLongitude) {
+                        document.getElementById('checkOutLocation').style.display = 'block';
+                        document.getElementById('checkOutCoords').textContent = 
+                            `Latitude: ${attendanceData.checkOutLatitude.toFixed(4)}, Longitude: ${attendanceData.checkOutLongitude.toFixed(4)}`;
+                    }
+                }
+
+                // Update summary
+                updateSummary();
+            } catch (error) {
+                console.error('Error loading attendance:', error);
+            }
+        }
+
+        function updateSummary() {
+            let html = '<div class="history-item">';
+
+            if (attendanceData.checkInTime) {
+                const status = attendanceData.checkOutTime ? '✓ Present' : '⏱️ Checked In';
+                html += `<div><div class="history-item-date">Status: ${status}</div>`;
+
+                if (attendanceData.checkOutTime) {
+                    const checkIn = new Date(`2000-01-01 ${attendanceData.checkInTime}`);
+                    const checkOut = new Date(`2000-01-01 ${attendanceData.checkOutTime}`);
+                    const duration = (checkOut - checkIn) / (1000 * 60);
+                    const hours = Math.floor(duration / 60);
+                    const minutes = duration % 60;
+                    html += `<div class="history-item-time">Duration: ${hours}h ${minutes}m</div>`;
+                } else {
+                    html += `<div class="history-item-time">Check-In: ${attendanceData.checkInTime}</div>`;
+                }
+
+                html += '</div>';
+            } else {
+                html += `<div><div class="history-item-date">Status: Not checked in</div><div class="history-item-time">Duration: --</div></div>`;
+            }
+
+            html += '</div>';
+            document.getElementById('historySummary').innerHTML = html;
+        }
+
+        function showMessage(message, type) {
+            const msgEl = document.getElementById('message');
+            msgEl.textContent = message;
+            msgEl.className = `message ${type}`;
+            msgEl.style.display = 'block';
+
+            setTimeout(() => {
+                msgEl.style.display = 'none';
+            }, 5000);
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function logout() {
+            // Get location for logout
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        performLogout(position.coords.latitude, position.coords.longitude);
+                    },
+                    (error) => {
+                        console.log('Could not get location for logout');
+                        performLogout(null, null);
+                    }
+                );
+            } else {
+                performLogout(null, null);
+            }
+        }
+
+        async function performLogout(latitude, longitude) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        latitude: latitude,
+                        longitude: longitude
+                    })
+                });
+
+                if (response.ok) {
+                    console.log('Logout recorded');
+                }
+            } catch (error) {
+                console.error('Error logging logout:', error);
+            } finally {
+                // Clear session storage and redirect
+                localStorage.removeItem('token');
+                localStorage.removeItem('role');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userId');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>
